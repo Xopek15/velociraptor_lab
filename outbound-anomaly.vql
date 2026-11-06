@@ -1,0 +1,5 @@
+
+SELECT Pid, Name, Status, Laddr, Raddr
+FROM netstat()
+WHERE Status = "ESTAB"
+  AND Raddr.Port = 9090
