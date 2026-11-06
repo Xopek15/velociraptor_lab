@@ -1,6 +1,18 @@
 
-SELECT OSPath, Name, Data, Mtime
-FROM glob(
-    globs="HKEY_USERS/*/Software/Microsoft/Windows/CurrentVersion/Run/*",
-    accessor="registry"
-)
+name: Custom.Detection.PersistenceDelta
+description: Collect Windows user Run registry entries for comparison
+type: CLIENT
+
+sources:
+  - precondition: |
+      SELECT OS FROM info() WHERE OS = 'windows'
+    query: |
+      SELECT
+        OSPath,
+        Name,
+        Data,
+        Mtime
+      FROM glob(
+        globs="HKEY_USERS/*/Software/Microsoft/Windows/CurrentVersion/Run/*",
+        accessor="registry"
+      )
