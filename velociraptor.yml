@@ -1,0 +1,41 @@
+
+---
+- name: Install and manage Velociraptor on ALT Linux
+  hosts: linux_clients
+  become: true
+
+  vars:
+    rpm_source: /home/kali/velociraptor-lab/rpm-output/velociraptor_client_0.77.3_x86_64.rpm
+    rpm_target: /tmp/velociraptor_client.rpm
+
+  tasks:
+    - name: Check Velociraptor installation
+      stat:
+        path: /usr/local/bin/velociraptor_client
+      register: agent_binary
+
+    - name: Copy Velociraptor RPM
+      copy:
+        src: "{{ rpm_source }}"
+        dest: "{{ rpm_target }}"
+        mode: '0644'
+      when: not agent_binary.stat.exists
+
+    - name: Install Velociraptor RPM
+      command: rpm -Uvh "{{ rpm_target }}"
+      when: not agent_binary.stat.exists
+
+    - name: Start and enable Velociraptor
+      systemd:
+        name: velociraptor_client
+        enabled: true
+        state: started
+
+    - name: Check Velociraptor service status
+      command: systemctl is-active velociraptor_client
+      register: agent_status
+      changed_when: false
+
+    - name: Show Velociraptor service status
+      debug:
+        var: agent_status.stdout
