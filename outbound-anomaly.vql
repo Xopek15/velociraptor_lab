@@ -1,5 +1,19 @@
 
-SELECT Pid, Name, Status, Laddr, Raddr
-FROM netstat()
-WHERE Status = "ESTAB"
-  AND Raddr.Port = 9090
+
+name: Custom.Detection.OutboundAnomaly
+description: Detect outbound TCP connections to unusual ports
+type: CLIENT
+
+sources:
+  - precondition: |
+      SELECT OS FROM info() WHERE OS = 'windows'
+    query: |
+      SELECT
+        Pid,
+        Name,
+        Status,
+        Laddr,
+        Raddr
+      FROM netstat()
+      WHERE Status = "ESTAB"
+        AND Raddr.Port = 9090
