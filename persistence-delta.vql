@@ -1,0 +1,6 @@
+
+SELECT OSPath, Name, Data, Mtime
+FROM glob(
+    globs="HKEY_USERS/*/Software/Microsoft/Windows/CurrentVersion/Run/*",
+    accessor="registry"
+)
