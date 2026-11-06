@@ -1,0 +1,4 @@
+
+SELECT OSPath, Size, Mtime, Btime
+FROM glob(globs="C:/Users/*/AppData/Local/Temp/*")
+WHERE Btime > now() - 3600
